@@ -2,7 +2,7 @@
 
 <div>
     <a href="https://huggingface.co/OpenVideo"><img src="https://img.shields.io/badge/%F0%9F%A4%97%20HuggingFace-OpenVideo-yellow"></a>
-    <a href="https://www.modelscope.cn/profile/UmiMarch"><img src="https://img.shields.io/badge/ModelScope-OpenVideo-blue"></a>
+    <a href="https://www.modelscope.cn/organization/OpenVideo"><img src="https://img.shields.io/badge/ModelScope-OpenVideo-blue"></a>
     <a href="https://openxlab.org.cn/usercenter/UmiMarch"><img src="https://cdn-static.openxlab.org.cn/app-center/openxlab_app.svg"></a>
     <a href="https://wisemodel.cn/organization/OpenVideo"><img src="https://img.shields.io/badge/WiseModel-OpenVideo-purple"></a>
     <a href="https://www.twitter.com/UmiOpenVideo"><img alt="X (formerly Twitter) Follow" src="https://img.shields.io/twitter/follow/UmiOpenVideo"></a>
