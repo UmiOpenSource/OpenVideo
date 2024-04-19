@@ -1,5 +1,5 @@
 <h1 align="center">
-<img src="https://raw.githubusercontent.com/heatingma/OpenVideo/main/docs/assets/openvideo-logo2.png" width="600">
+<img src="docs/assets/openvideo-logo2.png" width="600">
 </h1><br>
 
 <div>
