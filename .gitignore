@@ -30,3 +30,4 @@ coverage.xml
 # test
 tests/test_clean/**
 tests/test_clean_out/**
+openvideo/video/clean/2SceneSplitting/.checkpoints/imagebind_huge.pth
