@@ -86,5 +86,5 @@ if __name__ == "__main__":
     process_videos_parallel(args.input_video_dir, args.output_keyframe_dir)
     
 # Usage:
-# python gen_keyframe_usediff.py --input_video_dir /workspace/mnt/storage/hourenzheng/1111 --output_keyframe_dir /workspace/mnt/storage/hourenzheng/555 
+# python gen_keyframe_usediff.py --input_video_dir input_video_dir --output_keyframe_dir output_keyframe_dir
 
