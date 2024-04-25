@@ -6,7 +6,7 @@ from multiprocessing import cpu_count
 from itertools import repeat
 from tqdm import tqdm
 
-def extract_keyframes(video_path, output_dir, image_diff_threshold=50, pixel_change_ratio_threshold = 0.3):
+def extract_keyframes_usediff(video_path, output_dir, image_diff_threshold=50, pixel_change_ratio_threshold = 0.3):
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
 
@@ -51,14 +51,15 @@ def extract_keyframes(video_path, output_dir, image_diff_threshold=50, pixel_cha
     # Save the first frame as a keyframe if no other keyframes were found during the loop
     if not first_keyframe_saved:
         keyframe_index = 0
-        keyframe_name = f"{os.path.splitext(os.path.basename(video_path))[0]}_keyframe_{keyframe_index}.png"
+        keyframe_name = f"{os.path.splitext(os.path.basename(video_path))[0]}_keyframe_{keyframe_index}.jpg"
         keyframe_path = os.path.join(output_dir, keyframe_name)
         cv2.imwrite(keyframe_path, frame)
 
     cap.release()
 
 def get_video_files(directory):
-    return [os.path.join(directory, f) for f in os.listdir(directory) if f.endswith(('.mp4', '.avi', '.mkv'))]
+    # return [os.path.join(directory, f) for f in os.listdir(directory) if f.endswith(('.mp4', '.avi', '.mkv'))]
+    return [os.path.join(directory, f) for f in os.listdir(directory)]
 
 def process_videos_parallel(directory, output_base_dir):
     video_files = get_video_files(directory)
@@ -73,7 +74,7 @@ def extract_keyframes_with_progress_update(args):
     video_path, output_base_dir = args
     output_dir = os.path.join(output_base_dir, os.path.splitext(os.path.basename(video_path))[0])
     try:
-        extract_keyframes(video_path, output_dir)
+        extract_keyframes_usediff(video_path, output_dir)
         return True  # Indicate success for tqdm update
     except Exception as e:
         print(f"Error processing video {video_path}: {e}")
