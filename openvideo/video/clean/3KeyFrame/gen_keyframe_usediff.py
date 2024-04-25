@@ -41,7 +41,7 @@ def extract_keyframes(video_path, output_dir, image_diff_threshold=50, pixel_cha
 
         if pixel_change_ratio > pixel_change_ratio_threshold:  # Adjust this threshold as needed
             keyframe_index = i
-            keyframe_name = f"{os.path.splitext(os.path.basename(video_path))[0]}_keyframe_{keyframe_index}.png"
+            keyframe_name = f"{os.path.splitext(os.path.basename(video_path))[0]}_keyframe_{keyframe_index}.jpg"
             keyframe_path = os.path.join(output_dir, keyframe_name)
             cv2.imwrite(keyframe_path, frame)
             first_keyframe_saved = True
@@ -78,6 +78,8 @@ def extract_keyframes_with_progress_update(args):
     except Exception as e:
         print(f"Error processing video {video_path}: {e}")
         return False  # Indicate failure for tqdm update (not used here, but could be useful for logging)
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="generate keyframe use diff")
     parser.add_argument("--input_video_dir", type=str, default=r'pexels-video')
