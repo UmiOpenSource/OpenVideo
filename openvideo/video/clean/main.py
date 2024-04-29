@@ -4,7 +4,8 @@ import os, sys, re, json, argparse
 from PreProcess import *
 from SceneSplitting import *
 from KeyFrame import *
-# from .OpticalFlow import *
+# from OpticalFlow import *
+from utils import *
 
 def video_clean_pipline(videos_dirs,cutscene_threshold,max_cutscene_len,eventcut_threshold):
     video_quality_assessment.video_quality_ass(videos_dirs)
@@ -17,11 +18,17 @@ def video_clean_pipline(videos_dirs,cutscene_threshold,max_cutscene_len,eventcut
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="OpenVideo Clean")
+    parser.add_argument("--parquets_input", type=str,
+                        # default=r"/mnt/data2/data/deep1/xcp/pexels/data",
+                        default=r"E:\pexels",
+                        help='parquet input dir')
     parser.add_argument("--videos_dirs", type=str, default=r'E:\pexels-video')
     parser.add_argument("--cutscene_threshold", type=int, default=25)
     parser.add_argument("--max_cutscene_len", type=int, default=5)
     parser.add_argument("--eventcut_threshold", type=float, default=0.6)
     args = parser.parse_args()
+
+    encode_parquet_file.encode_parquet_file2(args.parquets_input, args.videos_dirs)
 
     video_clean_pipline(args.videos_dirs,
                         args.cutscene_threshold,

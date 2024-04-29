@@ -44,6 +44,7 @@ def extract_frames(input_file: str, output_dir: str):
     subprocess.run(ffmpeg_cmd)
 
 def video_quality_ass(videos_dirs):
+    #download from https://www.modelscope.cn/models/iic/cv_man_image-quality-assessment/summary
     model = Model.from_pretrained('PreProcess/cv_man_image-quality-assessment')
     image_quality_assessment_pipeline = pipeline(Tasks.image_quality_assessment_mos, model=model,device='gpu')
 
@@ -72,7 +73,7 @@ def video_quality_ass(videos_dirs):
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Event Stitching")
+    parser = argparse.ArgumentParser(description="Video Quality Assessment")
     parser.add_argument("--videos_dirs", type=str, default=r'E:\pexels-video')
     args = parser.parse_args()
 
