@@ -1,0 +1,10 @@
+{
+    "framework": "pytorch",
+    "task": "image-quality-assessment-mos",
+    "pipeline": {
+        "type": "image-quality-assessment-man"
+    },
+    "model": {
+        "type": "image-quality-assessment-man"
+    }
+}

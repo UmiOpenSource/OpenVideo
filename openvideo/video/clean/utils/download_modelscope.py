@@ -1,3 +1,14 @@
+
+import os
+
+
+os.environ["http_proxy"] = "http://127.0.0.1:10809"
+# os.environ["https_proxy"] = "http://127.0.0.1:10809"
+
+os.environ["all_proxy"] = "socks5://127.0.0.1:10808"
+
+
+
 #验证SDK token
 from modelscope.hub.api import HubApi
 api = HubApi()

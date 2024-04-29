@@ -11,14 +11,17 @@ from tqdm import tqdm
 import numpy as np
 
 sys.path.append('ImageBind')
-from models import imagebind_model
-from models.imagebind_model import ModalityType
+from .ImageBind.models import imagebind_model
+from .ImageBind.models.imagebind_model import ModalityType
 
 import random
+import pathlib
 import math
 from glob import glob
 from multiprocessing import  Process
 from multiprocessing import cpu_count
+
+import torch
 
 
 def read_videoframe(video_path, frame_idx):
@@ -41,11 +44,20 @@ def transfer_timecode(frameidx, fps):
         timecode.append([s, e])
     return timecode
 
-
-def extract_cutscene_feature(video_path, cutscenes):
+def extract_cutscene_feature(video_path,model,device, cutscenes):
     features = torch.empty((0,1024))
     res = []
     num_parallel_cutscene = 128
+
+    image_transform = transforms.Compose(
+        [
+            transforms.ToTensor(),
+            transforms.Normalize(
+                mean=(0.48145466, 0.4578275, 0.40821073),
+                std=(0.26862954, 0.26130258, 0.27577711),
+            ),
+        ]
+    )
 
     for i in range(0, len(cutscenes), num_parallel_cutscene):
         cutscenes_sub = cutscenes[i:i+num_parallel_cutscene]
@@ -69,7 +81,6 @@ def extract_cutscene_feature(video_path, cutscenes):
 
     return features, res
 
-
 def verify_cutscene(cutscenes, cutscene_feature, cutscene_status, transition_threshold=0.8):
     cutscenes_new = []
     cutscene_feature_new = []
@@ -88,7 +99,6 @@ def verify_cutscene(cutscenes, cutscene_feature, cutscene_status, transition_thr
         cutscenes_new.append(cutscene)
         cutscene_feature_new.append([start_frame_fet, end_frame_fet])
     return cutscenes_new, cutscene_feature_new
-
 
 def cutscene_stitching(cutscenes, cutscene_feature, eventcut_threshold=0.6):
     assert len(cutscenes) == len(cutscene_feature)
@@ -168,10 +178,17 @@ def write_json_file(data, output_file):
     with open(output_file, "w") as f:
         f.write(data)
 
-def event_stitching(videos_input, cutscene_frameidx, eventcut_threshold, output_json_file, sub_list):
+def event_stitching_pro(videos_input, device_id,cutscene_frameidx, eventcut_threshold, event_timecode, sub_list):
+
+    device = torch.device("cuda:"+str(device_id) if torch.cuda.is_available() else "cpu")
+    model = imagebind_model.imagebind_huge(pretrained=True)
+    model.eval()
+    model.to(device)
 
     for dir in sub_list:
-
+        print("dir: ",dir)
+        if os.path.exists(os.path.join(videos_input,dir,cutscene_frameidx)) == False:
+            continue
         f = open(os.path.join(os.path.join(videos_input,dir,cutscene_frameidx)))
         video_cutscenes = json.load(f)
 
@@ -181,12 +198,12 @@ def event_stitching(videos_input, cutscene_frameidx, eventcut_threshold, output_
             # video_path = os.path.join(videos_input, dir, video_path)
             cap = cv2.VideoCapture(video_path)
             fps = cap.get(cv2.CAP_PROP_FPS)
-            cutscene = video_cutscenes[video_path.split("/")[-1]]
-            if len(cutscene) == 0:
-                video_events[video_path.split("/")[-1]] = []
+            cutscene = video_cutscenes[pathlib.Path(video_path).name]
+            if len(cutscene) == 1:
+                video_events[pathlib.Path(video_path).name] = transfer_timecode(cutscene, fps)
                 continue
 
-            cutscene_raw_feature, cutscene_raw_status = extract_cutscene_feature(video_path, cutscene)
+            cutscene_raw_feature, cutscene_raw_status = extract_cutscene_feature(video_path,model,device, cutscene)
             cutscenes, cutscene_feature = verify_cutscene(cutscene,
                                                           cutscene_raw_feature,
                                                           cutscene_raw_status,
@@ -204,53 +221,48 @@ def event_stitching(videos_input, cutscene_frameidx, eventcut_threshold, output_
                                                  still_event_threshold=0.15)
 
             # events, event_feature = verify_event(events_raw, event_feature_raw, min_event_len=2.5, max_event_len=60, redundant_event_threshold=0.3, trim_begin_last_percent=0.1, still_event_threshold=0.15)
-            video_events[video_path.split("/")[-1]] = transfer_timecode(events, fps)
+            video_events[pathlib.Path(video_path).name] = transfer_timecode(events, fps)
 
-        output_json_file = os.path.join(videos_input, dir, output_json_file)
-        write_json_file(video_events, output_json_file)
+        write_json_file(video_events, os.path.join(videos_input, dir, event_timecode))
+def event_stitching2(videos_dirs, eventcut_threshold):
+    cutscene_frameidx = "cutscene_frame_idx.json"
+    event_timecode =  "event_timecode.json"
 
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Event Stitching")
-    parser.add_argument("--videos_input", type=str, default=r'E:\pexels-video')
-    parser.add_argument("--cutscene_frameidx", type=str, default='cutscene_frame_idx.json')
-    parser.add_argument("--eventcut_threshold", type=float, default=0.6)
-    parser.add_argument("--output_json_file", type=str, default="event_timecode.json")
-    args = parser.parse_args()
+    device_list = []
+    for i in range(torch.cuda.device_count()):
+        total_memory = torch.cuda.get_device_properties(i).total_memory / (1024 ** 3)  # 显存总量(GB)
 
-    device = "cuda"
-    model = imagebind_model.imagebind_huge(pretrained=True)
-    model.eval()
-    model.to(device)
+        for j in range(math.floor(total_memory / 5)):
+            device_list.append(i)
 
-    image_transform = transforms.Compose(
-        [
-            transforms.ToTensor(),
-            transforms.Normalize(
-                mean=(0.48145466, 0.4578275, 0.40821073),
-                std=(0.26862954, 0.26130258, 0.27577711),
-            ),
-        ]
-    )
-
-    data_list = os.listdir(args.videos_input)
-    n_processes = cpu_count()
-
-    # event_stitching(args.videos_input,
-    #               args.cutscene_frameidx,
-    #               args.eventcut_threshold,
-    #               args.output_json_file,
-    #               data_list)
+    data_list = os.listdir(videos_dirs)
+    n_processes = len(device_list)
 
     processes_list = []
     for n in range(n_processes):
         size = math.ceil(len(data_list) / n_processes)
         sub_list = data_list[n * size: min((n + 1) * size, len(data_list))]
 
-        processes_list.append(Process(target=event_stitching, \
-                                      args=(args.videos_input, \
-                                            args.cutscene_frameidx, \
-                                            args.eventcut_threshold, \
-                                            args.output_json_file,\
+        processes_list.append(Process(target=event_stitching_pro, \
+                                      args=(videos_dirs, \
+                                            device_list[n],
+                                            cutscene_frameidx, \
+                                            eventcut_threshold, \
+                                            event_timecode,\
                                             sub_list)))
     for p in processes_list:
         p.start()
+    for p in processes_list:
+        p.join()
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="Event Stitching")
+    parser.add_argument("--videos_dirs", type=str, default=r'E:\pexels-video')
+    # parser.add_argument("--cutscene_frameidx", type=str, default='cutscene_frame_idx.json')
+    parser.add_argument("--eventcut_threshold", type=float, default=0.6)
+    # parser.add_argument("--output_json_file", type=str, default="event_timecode.json")
+    args = parser.parse_args()
+
+    event_stitching2(args.videos_input,args.eventcut_threshold)
+
+

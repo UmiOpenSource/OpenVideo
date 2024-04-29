@@ -27,22 +27,36 @@ def encode_parquet_file(input_root,output_root,sub_list):
                 video = df['video'][0]
                 md5 = hashlib.md5(video).hexdigest()
 
+                info = {}
+                info.update({"id":str(df['id'][0])})
+                info.update({"md5":str(md5)})
+                info.update({"tags":str(df['tags'][0])})
+                info.update({"width":str(df['width'][0])})
+                info.update({"height":str(df['height'][0])})
+                info.update({"fps":str(df['fps'][0])})
+                info.update({"url":str(df['url'][0])})
+
+                os.makedirs(os.path.join(output_root, folder,id+'_'+md5), exist_ok=True)
+                with open(os.path.join(output_root, folder,id+'_'+md5, "info.json"), "w", encoding='utf-8') as f:  ## 设置'utf-8'编码
+                    json.dump(info, f, indent=2, sort_keys=True, ensure_ascii=False)
+
                 os.makedirs(os.path.join(output_root,folder),exist_ok=True)
                 fn = osp.join(output_root, folder, id+'_'+md5) +".mp4"
                 with open(fn, 'wb') as f:
                     fc = f.write(video)
             except Exception as e:
-                # print("parquet_file: ",str(e))
+                print("parquet_file: ",str(e))
                 continue
-
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="encode parquet files ")
     parser.add_argument("--parquets_input", type=str,
-                        default=r"/mnt/data2/data/deep1/xcp/pexels/data",
+                        # default=r"/mnt/data2/data/deep1/xcp/pexels/data",
+                        default= r"E:\pexels",
                         help='parquet input dir')
     parser.add_argument("--videos_output", type=str,
-                        default=r'/mnt/data2/data/deep1/xcp/pexels-video',
+                        # default=r'/mnt/data2/data/deep1/xcp/pexels-video',
+                        default=r"E:\pexels-video",
                         help="video ouput dir")
     args = parser.parse_args()
 
