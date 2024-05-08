@@ -18,6 +18,7 @@ import random
 import pathlib
 import math
 from glob import glob
+import multiprocessing
 from multiprocessing import  Process
 from multiprocessing import cpu_count
 
@@ -189,53 +190,64 @@ def event_stitching_pro(videos_input, device_id,cutscene_frameidx, eventcut_thre
         print("dir: ",dir)
         if os.path.exists(os.path.join(videos_input,dir,cutscene_frameidx)) == False:
             continue
+        if os.path.exists(os.path.join(videos_input, dir, event_timecode)) == True:
+            continue
+
         f = open(os.path.join(os.path.join(videos_input,dir,cutscene_frameidx)))
         video_cutscenes = json.load(f)
 
         video_events = {}
 
         for video_path in tqdm(glob(os.path.join(videos_input,dir, "*.mp4"))):
-            # video_path = os.path.join(videos_input, dir, video_path)
-            cap = cv2.VideoCapture(video_path)
-            fps = cap.get(cv2.CAP_PROP_FPS)
-            cutscene = video_cutscenes[pathlib.Path(video_path).name]
-            if len(cutscene) == 1:
-                video_events[pathlib.Path(video_path).name] = transfer_timecode(cutscene, fps)
+            try:
+                # video_path = os.path.join(videos_input, dir, video_path)
+                cap = cv2.VideoCapture(video_path)
+                fps = cap.get(cv2.CAP_PROP_FPS)
+                cutscene = video_cutscenes[pathlib.Path(video_path).name]
+                if len(cutscene) == 1:
+                    video_events[pathlib.Path(video_path).name] = transfer_timecode(cutscene, fps)
+                    continue
+
+                cutscene_raw_feature, cutscene_raw_status = extract_cutscene_feature(video_path,model,device, cutscene)
+                cutscenes, cutscene_feature = verify_cutscene(cutscene,
+                                                              cutscene_raw_feature,
+                                                              cutscene_raw_status,
+                                                              transition_threshold=1.)
+                events_raw, event_feature_raw = cutscene_stitching(cutscenes,
+                                                                   cutscene_feature,
+                                                                   eventcut_threshold=eventcut_threshold)
+                events, event_feature = verify_event(events_raw,
+                                                     event_feature_raw,
+                                                     fps,
+                                                     min_event_len=2.0,
+                                                     max_event_len=1200,
+                                                     redundant_event_threshold=0.0,
+                                                     trim_begin_last_percent=0.0,
+                                                     still_event_threshold=0.15)
+
+                # events, event_feature = verify_event(events_raw, event_feature_raw, min_event_len=2.5, max_event_len=60, redundant_event_threshold=0.3, trim_begin_last_percent=0.1, still_event_threshold=0.15)
+                video_events[pathlib.Path(video_path).name] = transfer_timecode(events, fps)
+            except Exception as e:
+                print(str(e))
                 continue
-
-            cutscene_raw_feature, cutscene_raw_status = extract_cutscene_feature(video_path,model,device, cutscene)
-            cutscenes, cutscene_feature = verify_cutscene(cutscene,
-                                                          cutscene_raw_feature,
-                                                          cutscene_raw_status,
-                                                          transition_threshold=1.)
-            events_raw, event_feature_raw = cutscene_stitching(cutscenes,
-                                                               cutscene_feature,
-                                                               eventcut_threshold=eventcut_threshold)
-            events, event_feature = verify_event(events_raw,
-                                                 event_feature_raw,
-                                                 fps,
-                                                 min_event_len=2.0,
-                                                 max_event_len=1200,
-                                                 redundant_event_threshold=0.0,
-                                                 trim_begin_last_percent=0.0,
-                                                 still_event_threshold=0.15)
-
-            # events, event_feature = verify_event(events_raw, event_feature_raw, min_event_len=2.5, max_event_len=60, redundant_event_threshold=0.3, trim_begin_last_percent=0.1, still_event_threshold=0.15)
-            video_events[pathlib.Path(video_path).name] = transfer_timecode(events, fps)
 
         write_json_file(video_events, os.path.join(videos_input, dir, event_timecode))
 def event_stitching2(videos_dirs, eventcut_threshold):
     cutscene_frameidx = "cutscene_frame_idx.json"
     event_timecode =  "event_timecode.json"
 
+    multiprocessing.set_start_method('spawn')
+
     device_list = []
     for i in range(torch.cuda.device_count()):
         total_memory = torch.cuda.get_device_properties(i).total_memory / (1024 ** 3)  # 显存总量(GB)
 
-        for j in range(math.floor(total_memory / 5)):
+        for j in range(math.floor(total_memory / 10)):
             device_list.append(i)
 
     data_list = os.listdir(videos_dirs)
+
+    print("device_list: ",device_list)
     n_processes = len(device_list)
 
     processes_list = []

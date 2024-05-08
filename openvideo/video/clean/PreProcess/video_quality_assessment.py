@@ -19,8 +19,13 @@ from modelscope.pipelines import pipeline
 from modelscope.utils.constant import Tasks
 from modelscope.outputs import OutputKeys
 from modelscope.models import Model
+import logging
+from modelscope.utils.logger import get_logger
+logger = get_logger(log_level=logging.ERROR)
 
 import subprocess
+
+
 
 def extract_frames(input_file: str, output_dir: str):
     """

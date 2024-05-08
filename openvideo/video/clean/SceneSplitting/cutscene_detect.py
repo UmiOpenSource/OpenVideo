@@ -53,6 +53,9 @@ def write_json_file(data, output_file):
 def cutscenes_pro(videos_input,cutscene_threshold,max_cutscene_len,cutscene_frame_idx,sub_list):
 
     for dir in sub_list:
+        if os.path.exists(os.path.join(videos_input,dir,cutscene_frame_idx)) == True:
+            continue
+
         print("dir:",dir,"\n")
         video_cutscenes = {}
         videos_path = glob(os.path.join(videos_input,dir,'*.mp4'))
@@ -69,8 +72,18 @@ def cutscenes_pro(videos_input,cutscene_threshold,max_cutscene_len,cutscene_fram
 def cutscenes(videos_dirs,cutscene_threshold,max_cutscene_len):
     cutscene_frame_idx = "cutscene_frame_idx.json"
     data_list = os.listdir(videos_dirs)
+    random.shuffle(data_list)
+
+    # cutscenes_pro(videos_dirs,
+    #               cutscene_threshold,
+    #               max_cutscene_len,
+    #               cutscene_frame_idx,
+    #               data_list)
+
     n_processes = cpu_count()
     processes_list = []
+
+
     for n in range(n_processes):
         size = math.ceil(len(data_list) / n_processes)
         sub_list = data_list[n * size: min((n + 1) * size, len(data_list))]

@@ -55,9 +55,10 @@ def encode_parquet_file2(parquets_input,videos_dirs):
     #     shutil.rmtree(args.videos_output,ignore_errors=True)
 
     data_list = os.listdir(parquets_input)
-    data_list = sorted(data_list)
+    # data_list = sorted(data_list)
+    random.shuffle(data_list)
     print(data_list)
-    n_processes = 1
+    n_processes = 3
 
     # encode_parquet_file(args.parquets_input, args.videos_output,data_list)
 
