@@ -60,7 +60,7 @@ def encode_parquet_file2(parquets_input,videos_dirs):
     print(data_list)
     n_processes = 3
 
-    # encode_parquet_file(args.parquets_input, args.videos_output,data_list)
+    # encode_parquet_file_pro(parquets_input, videos_dirs,data_list)
 
     processes_list = []
     for n in range(n_processes):
@@ -86,11 +86,12 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="encode parquet files ")
     parser.add_argument("--parquets_input", type=str,
                         # default=r"/mnt/data2/data/deep1/xcp/pexels/data",
-                        default= r"E:\pexels",
+                        default= r"Y:\deep1\xcp\pexels",
                         help='parquet input dir')
+
     parser.add_argument("--videos_dirs", type=str,
                         # default=r'/mnt/data2/data/deep1/xcp/pexels-video',
-                        default=r"E:\pexels-video",
+                        default=r"Y:\deep1\xcp\pexels-video",
                         help="videos_dirs dir")
     args = parser.parse_args()
 

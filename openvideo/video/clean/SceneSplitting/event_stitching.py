@@ -236,13 +236,14 @@ def event_stitching2(videos_dirs, eventcut_threshold):
     cutscene_frameidx = "cutscene_frame_idx.json"
     event_timecode =  "event_timecode.json"
 
-    multiprocessing.set_start_method('spawn')
+    # import multiprocessing
+    # multiprocessing.set_start_method('spawn')
 
     device_list = []
     for i in range(torch.cuda.device_count()):
         total_memory = torch.cuda.get_device_properties(i).total_memory / (1024 ** 3)  # 显存总量(GB)
 
-        for j in range(math.floor(total_memory / 10)):
+        for j in range(math.floor(total_memory / 7)):
             device_list.append(i)
 
     data_list = os.listdir(videos_dirs)

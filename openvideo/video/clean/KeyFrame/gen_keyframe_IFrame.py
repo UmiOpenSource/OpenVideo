@@ -26,22 +26,28 @@ def extract_keyframes_use_iframe(videos_dirs,sub_list):
 
             for video_path in glob(os.path.join(videos_dirs,dir,folder, "*.mp4")):
 
-                prefix = f"{pathlib.Path(video_path).stem}_KeyFrame_I"
-                output_dir = os.path.join(videos_dirs,dir,folder)
+                try:
+                    prefix = f"{pathlib.Path(video_path).stem}_KeyFrame_I"
+                    output_dir = os.path.join(videos_dirs, dir, folder)
 
-                command_template = (
-                    'ffmpeg -i "{input_video}" '
-                    '-hide_banner -loglevel panic '
-                    '-vf "select=eq(pict_type\,PICT_TYPE_I)" '
-                    '-vsync 2 "{output_prefix}_%d.jpg"'
-                )
+                    command_template = (
+                        'ffmpeg -i "{input_video}" '
+                        '-hide_banner -loglevel panic '
+                        '-vf "select=eq(pict_type\,PICT_TYPE_I)" '
+                        '-vsync 2 "{output_prefix}_%d.jpg"'
+                    )
 
-                command = command_template.format(
-                    input_video=video_path,
-                    output_prefix=os.path.join(output_dir, prefix),
-                )
-                # print(command)
-                subprocess.run(shlex.split(command), check=True)
+                    command = command_template.format(
+                        input_video=video_path,
+                        output_prefix=os.path.join(output_dir, prefix),
+                    )
+                    # print(command)
+                    subprocess.run(shlex.split(command), check=True)
+                except Exception as e:
+                    print(str(e))
+                    continue
+
+
 
 def get_video_files(directory):
     # return [os.path.join(directory, f) for f in os.listdir(directory) if f.endswith(('.mp4', '.avi', '.mkv'))]
@@ -70,6 +76,9 @@ def extract_keyframes_with_progress_update(args):
 def process_videos_parallel(videos_dirs):
     data_list = os.listdir(videos_dirs)
     n_processes = cpu_count()
+
+    import multiprocessing
+    # multiprocessing.set_start_method('spawn')
 
     processes_list = []
     for n in range(n_processes):

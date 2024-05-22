@@ -81,6 +81,8 @@ def process_videos_parallel(videos_dirs):
     data_list = os.listdir(videos_dirs)
     n_processes = cpu_count()
 
+    # extract_keyframes_3frames(videos_dirs,data_list)
+
     processes_list = []
     for n in range(n_processes):
         size = math.ceil(len(data_list) / n_processes)
@@ -101,7 +103,7 @@ if __name__ == "__main__":
     # parser.add_argument("--output_keyframe_dir", type=str, default=r'pexels-video-keyframe')
     args = parser.parse_args()
 
-    process_videos_parallel(args.videos_dirs)
+    process_videos_paralle(args.videos_dirs)
     
 # Usage:
 # python gen_keyframe_3frames.py --videos_dirs input_video_dir --output_keyframe_dir output_keyframe_dir
