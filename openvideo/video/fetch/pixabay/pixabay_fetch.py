@@ -1,6 +1,7 @@
 import os
 import time
 import shutil
+import numpy as np
 from tqdm import tqdm
 from datetime import datetime
 from bs4 import BeautifulSoup
@@ -21,6 +22,7 @@ class PixabayVideoFetch(VideoDataset):
             website="pixabay", 
             root_dir=root_dir,
         )
+        self.cache = np.load("cache/pixabay.npy", allow_pickle=True)
         
     def download(
         self, 
@@ -38,31 +40,7 @@ class PixabayVideoFetch(VideoDataset):
             disable_gpu=disable_gpu,
         )
         self.login(username, password)
-        for page_idx in range(524):
-            print(f"download the page_{page_idx}")
-            self.download_with_page_idx(
-                page_idx=page_idx+1,
-                platform=platform
-            )
-
-    def download_with_page_idx(
-        self,
-        page_idx: int,
-        platform: str
-    ):
-        # read from the view source (.html)
-        view_source_download_path = os.path.join(self.cache_dir, f"pixabay_page{page_idx}.html")
-        with open(view_source_download_path, 'r', encoding='utf-8') as file:
-            html_content = file.read()
-        soup = BeautifulSoup(html_content, 'html.parser')
-        # resolution
-        html_resolutions = soup.find_all(class_="videoDef--zlvbV")
-        resolutions = [video.find('strong').text for video in html_resolutions]
-        # unprocess download url
-        html_unprocess_download_urls = soup.find_all(class_="link--WHWzm")
-        orgin_urls = ["https://pixabay.com/zh" + video['href'] for video in html_unprocess_download_urls]
-        
-        for idx, origin_url in tqdm(enumerate(orgin_urls)):
+        for idx, (page_idx, origin_url, resolution) in tqdm(enumerate(self.cache)):
             # download the origin page's view source
             origin_url: str
             self.driver.get(origin_url)
@@ -72,7 +50,6 @@ class PixabayVideoFetch(VideoDataset):
             owner = soup.find(class_='usernameFollowersContainer--0odKZ').find('a').text
             name = origin_url.split('/')[-2]
             text = name
-            resolution = resolutions[idx]
             
             # get the download url
             download_url_number = origin_url.split("/")[-2].split("-")[-1]
@@ -147,14 +124,17 @@ class PixabayVideoFetch(VideoDataset):
 
         try:
             accept_cookies_button = WebDriverWait(self.driver, 10).until(
-                EC.element_to_be_clickable((By.ID, "onetrust-accept-btn-handler")))
+                EC.element_to_be_clickable((By.CLASS_NAME, "onetrust-accept-btn-handler")))
             accept_cookies_button.click()
         except TimeoutException:
             print("No cookie acceptance button found or not clickable.")
             
         # login button
         login_button = WebDriverWait(self.driver, 20).until(
-            EC.element_to_be_clickable((By.CLASS_NAME, "loginButton--uIEF2")))
+            EC.element_to_be_clickable((
+                By.CSS_SELECTOR, ".button--9NFL8.ghost--wIHwU.light--C3NP-.center--ZZf40.responsive__r3_"
+            ))
+        )   
         login_button.click()
 
         # input username and password
@@ -169,8 +149,11 @@ class PixabayVideoFetch(VideoDataset):
         # click submit button
         try:
             submit_button = WebDriverWait(self.driver, 20).until(
-                EC.element_to_be_clickable((By.CLASS_NAME, "loginButton--cVPDu")))
-            self.driver.execute_script("arguments[0].click();", submit_button)
+                EC.element_to_be_clickable((
+                    By.CSS_SELECTOR, ".button--9NFL8.primary--rehiP.stretch--PMRkR.center--ZZf40.responsive__rb_"
+                ))
+            )
+            submit_button.click()
         except (TimeoutException, NoSuchElementException) as e:
             print(f"Error clicking the submit button: {e}")
         time.sleep(1)

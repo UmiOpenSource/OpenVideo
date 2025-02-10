@@ -45,7 +45,7 @@ class PexelsAPI:
         self,
         start_page: int,
         end_page: int,
-        save_api_dict_every_pages: int=10
+        save_api_dict_every_pages: int=1
     ):
         for page_idx in tqdm(range(start_page, end_page, 1)):
             time.sleep(1)

@@ -59,6 +59,8 @@ OpenVideo专注于文生视频领域，旨在为全球的AI研究者提供高质
 
 ## ⚡快速开始
 
+### 快速安装
+
 您可以使用PyPI安装稳定版本，只需要在命令行输入以下命令:
 
 ```bash
@@ -86,6 +88,59 @@ selenium>=4.19.0
 scenedetect>=0.6.3
 texttable>=1.7.0
 bs4>=0.0.2
+```
+
+### 使用实例 —— 视频数据下载
+
+* Mixkit [https://mixkit.co/free-stock-video/](https://mixkit.co/free-stock-video/)
+```python
+from openvideo.video.fetch import MixkitVideoFetch
+ 
+mixkit_fetch = MixkitVideoFetch(root_dir="your/video/save/path")
+mixkit_fetch.download_with_category_page_idx(
+    category="sky", # 视频类型
+    page_idx=1, # 从第几页开始下载
+    start_idx=22, # 从第几个视频开始下载
+    platform="linux" # 运行平台
+)
+```
+
+* Pixabay [https://pixabay.com/zh](https://pixabay.com/zh)
+```python
+from openvideo.video.fetch import PixabayVideoFetch
+
+pixabay = PixabayVideoFetch("your/video/save/path")
+pixabay.download(
+    chrome_exe_path=r"your/chrome/exe/path",
+    username="your/pixabay/username",
+    password="your/pixabay/password",
+    headless=False,
+    platform="windows" # 目前只支持windows
+)
+```
+
+* Pexels []()
+```python
+from openvideo.video.fetch import PexelsVdieoFetch, PexelsAPI
+
+# 第一步，调用API获得视频链接
+pexels_api = PexelsAPI(
+    api="your/pexels/api", 
+    save_path="pexels_api.npy"
+)
+pexels_api.fetch_api(
+    start_page=1, # 起始页
+    end_page=2, # 最终页
+    save_api_dict_every_pages=1 # 每多少页保存一次
+)
+
+# 第二步，下载视频
+pexels = PexelsVdieoFetch("pexels")
+pexels.download(
+    api_npy_save_path="pexels_api.npy", 
+    chrome_exe_path=r"your/chrome/exe/path",
+    headless=False
+)
 ```
 
 ## 👨‍💻 贡献者

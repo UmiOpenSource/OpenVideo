@@ -55,7 +55,7 @@ class PexelsVdieoFetch(VideoDataset):
         api_video_info: dict,
         sleep_interval: int,
         timeout: int,
-        platform: str
+        platform: str = "windows"
     ):
         api_id = api_video_info['api_id']
         origin_url = api_video_info['origin_url']
