@@ -216,7 +216,7 @@ Prompt:      @Tiger.C @dpyneo @巧克力
 
 ## ✨ 分享交流
 
-
+![connect](./docs/assets/connect.png)
 
 ## ©️ 许可协议
 
