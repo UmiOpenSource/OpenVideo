@@ -138,7 +138,7 @@ pexels.download(
 
 我们开发了一款基于Rust语言的[视频标注平台](https://huggingface.co/spaces/OpenVideo/GPT4o-Azure-Caption-Pixel)，旨在高效生成图像、视频等多种媒体的标签。该平台支持调用当前最先进的AI模型，如GPT-4o、Gemini、Claude3等，支持多提示输入和灵活的配置选项。其设计注重高性能，能够实现每秒处理100次查询，任务处理能力可扩展至2亿次。借助100个API账号，该工具可在8小时内合成包含20万条视频的数据集。所有输出内容均按模型和提示进行分类整理，确保结构清晰，便于后续研究与应用的集成。
 
-![image-20250123193428569](.\docs\assets\caption_platform.png)
+![image-20250123193428569](./docs/assets/caption_platform.png)
 
 （如遇显示问题，可换Edge浏览器查看）
 
@@ -155,7 +155,7 @@ pexels.download(
    
 2. 通过标注平台播放视频，查看对应的标注文本，修改标注文本和切换下一个视频
 
-   ![openvideo_tagger](.\docs\assets\openvideo_tagger.png)
+   ![openvideo_tagger](./docs/assets/openvideo_tagger.png)
 
 
 **对于用户自定义数据集需要满足：**
@@ -174,7 +174,7 @@ pexels.download(
 
 输入HuggingFace的个人token、HuggingFace的数据集路径、ModelScope的个人token和ModelScope对应的仓库目录，点击Submit即可以后台运行的方式将数据集从HuggingFace复制到ModelScope对应的仓库中
 
-![data_transfer](.\docs\assets\data_transfer.png)
+![data_transfer](./docs/assets/data_transfer.png)
 
 
 
