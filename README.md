@@ -5,15 +5,15 @@
 <div>
     <a href="https://huggingface.co/OpenVideo"><img src="https://img.shields.io/badge/%F0%9F%A4%97%20HuggingFace-OpenVideo-yellow"></a>
     <a href="https://www.modelscope.cn/organization/OpenVideo"><img src="https://img.shields.io/badge/ModelScope-OpenVideo-blue"></a>
-    <a href="https://openxlab.org.cn/usercenter/UmiMarch"><img src="https://cdn-static.openxlab.org.cn/app-center/openxlab_app.svg"></a>
+    <!-- <a href="https://openxlab.org.cn/usercenter/UmiMarch"><img src="https://cdn-static.openxlab.org.cn/app-center/openxlab_app.svg"></a> -->
     <a href="https://wisemodel.cn/organization/OpenVideo"><img src="https://img.shields.io/badge/WiseModel-OpenVideo-purple"></a>
-    <a href="https://www.twitter.com/UmiOpenVideo"><img alt="X (formerly Twitter) Follow" src="https://img.shields.io/twitter/follow/UmiOpenVideo"></a>
+    <!-- <a href="https://www.twitter.com/UmiOpenVideo"><img alt="X (formerly Twitter) Follow" src="https://img.shields.io/twitter/follow/UmiOpenVideo"></a> -->
 </div>
 
 [![PyPi version](https://badgen.net/pypi/v/openvideo/)](https://pypi.org/pypi/openvideo/)
 [![PyPI pyversions](https://img.shields.io/badge/dynamic/json?color=blue&label=python&query=info.requires_python&url=https%3A%2F%2Fpypi.org%2Fpypi%2Fdata4co%2Fjson)](https://pypi.python.org/pypi/openvideo/) 
 [![Downloads](https://static.pepy.tech/badge/openvideo)](https://pepy.tech/project/openvideo)
-[![GitHub stars](https://img.shields.io/github/stars/UmiMarch/OpenVideo.svg?style=social&label=Star&maxAge=8640)](https://GitHub.com/UmiMarch/OpenVideo/stargazers/)
+<!-- [![GitHub stars](https://img.shields.io/github/stars/UmiMarch/OpenVideo.svg?style=social&label=Star&maxAge=8640)](https://GitHub.com/UmiMarch/OpenVideo/stargazers/) -->
 
 OpenVideo专注于文生视频领域，旨在为全球的AI研究者提供高质量、多样化的视频数据，并配套相应的数据收集、清洗、标注工具，为人工智能产业的发展提供助力。
 
