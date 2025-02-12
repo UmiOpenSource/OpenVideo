@@ -181,7 +181,7 @@ pexels.download(
 
 数据清洗： @一马平川  @zjukop @伊小布
 
-Prompt:      @Tiger.C @dpyneo @巧克力
+Prompt:   @Tiger.C @dpyneo @巧克力
 
 模型打标：  @YUE @zjukop
 
@@ -189,7 +189,7 @@ Prompt:      @Tiger.C @dpyneo @巧克力
 
 数据回流：  @晚来风雪 @heatingma
 
-人工校验：  @一马平川 @dpyneo @杨嘉昊 @flipped @yi @belive @思恩
+人工校验：  @一马平川 @dpyneo @杨嘉昊 @flipped @yi @believe @思恩
 
 项目调研：  @dingby @believe
 
