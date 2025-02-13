@@ -10,56 +10,58 @@
 [![Downloads](https://static.pepy.tech/badge/openvideo)](https://pepy.tech/project/openvideo)
 [![GitHub stars](https://img.shields.io/github/stars/UmiMarch/OpenVideo.svg?style=social&label=Star&maxAge=8640)](https://GitHub.com/UmiMarch/OpenVideo/stargazers/)
 
-OpenVideo专注于文生视频领域，旨在为全球的AI研究者提供高质量、多样化的视频数据，并配套相应的数据收集、清洗、标注工具，为人工智能产业的发展提供助力。
+OpenVideo specializes in the domain of text-to-video generation, with the goal of providing high-quality and diverse video datasets to AI researchers globally. In addition, it offers comprehensive tools for data collection, cleaning, and annotation, thereby contributing to the advancement of the artificial intelligence industry.
+
+[中文主页](./README_ZH.md)
+
+## 📚Dataset
 
 
-## 📚数据集
-
-
-|    来源    | 规格 | 时长 |    条目     |
+|   Source | Resolution | Hours |  Clips |
 | :--------: | :--: | :--: | :---------: |
 | Pexels-Raw | 720p | 672h | 106k+ clips |
 
-### 下载方式：
 
-从[ModelScope](https://www.modelscope.cn/datasets/OpenVideo/pexel-0808-complete-final-test)下载：
+### Download：
+
+From [ModelScope](https://www.modelscope.cn/datasets/OpenVideo/pexel-0808-complete-final-test)：
 
 ```
 bash git clone https://user_id:access_token@www.modelscope.cn/datasets/OpenVideo/pexel-0808-complete-final-test.git
 ```
 
-从[huggingface](https://huggingface.co/datasets/OpenVideo/pexel-0808-complete-final-test)下载：
+From [huggingface](https://huggingface.co/datasets/OpenVideo/pexel-0808-complete-final-test)：
 
 ```
 bash git clone https://user_id:access_token@huggingface.co/datasets/OpenVideo/pexel-0808-complete-final-test
 ```
 
-(user_id是用户名，access_token需要在设置里生成)
+(user_id is your username, and access_token needs to be generated in the settings)
 
-### 解压脚本：
+
+### Script:
 
 ```
 python ./openvideo/video/preprocess/utils/decode_parquet_file.py --parquet_dir your_parquet_path --save_dir your_save_path
 ```
 
 
+## ⚡Tools
 
-## ⚡工具说明
 
-
-您可以使用PyPI安装稳定版本，只需要在命令行输入以下命令:
+You can install this package via PyPI by entering the following command in the terminal:
 
 ```bash
 $ pip install openvideo
 ```
 
-或者通过Github获取最新版本:
+Alternatively, you can obtain the latest version from GitHub:
 
 ```bash
 $ pip install -U https://github.com/UmiMarch/OpenVideo/archive/master.zip # with --user for user install (no root)
 ```
 
-``OpenVideo`` 依赖的包如下所示:
+The dependencies for `OpenVideo` are as follows:
 
 ```
 huggingface_hub>=0.22.2
@@ -76,7 +78,7 @@ texttable>=1.7.0
 bs4>=0.0.2
 ```
 
-### <u>视频数据下载</u>
+### Video Download
 
 * Mixkit [https://mixkit.co/free-stock-video/](https://mixkit.co/free-stock-video/)
 ```python
@@ -84,10 +86,10 @@ from openvideo.video.fetch import MixkitVideoFetch
  
 mixkit_fetch = MixkitVideoFetch(root_dir="your/video/save/path")
 mixkit_fetch.download_with_category_page_idx(
-    category="sky", # 视频类型
-    page_idx=1, # 从第几页开始下载
-    start_idx=22, # 从第几个视频开始下载
-    platform="linux" # 运行平台
+    category="sky", # Video category
+    page_idx=1, # Start downloading from this page
+    start_idx=22, # Start downloading from this video
+    platform="linux" # Running platform
 )
 ```
 
@@ -101,7 +103,7 @@ pixabay.download(
     username="your/pixabay/username",
     password="your/pixabay/password",
     headless=False,
-    platform="windows" # 目前只支持windows
+    platform="windows" # Currently only supports Windows
 )
 ```
 
@@ -109,18 +111,18 @@ pixabay.download(
 ```python
 from openvideo.video.fetch import PexelsVdieoFetch, PexelsAPI
 
-# 第一步，调用API获得视频链接
+# Step 1: Call the API to obtain video links
 pexels_api = PexelsAPI(
     api="your/pexels/api", 
     save_path="pexels_api.npy"
 )
 pexels_api.fetch_api(
-    start_page=1, # 起始页
-    end_page=2, # 最终页
-    save_api_dict_every_pages=1 # 每多少页保存一次
+    start_page=1, # Starting page
+    end_page=2, # Ending page
+    save_api_dict_every_pages=1 # Save the API dictionary every n pages
 )
 
-# 第二步，下载视频
+# Step 2: Download videos
 pexels = PexelsVdieoFetch("pexels")
 pexels.download(
     api_npy_save_path="pexels_api.npy", 
@@ -129,93 +131,91 @@ pexels.download(
 )
 ```
 
-### <u>视频标注平台</u>
+### Video Annotation Platform
 
-我们开发了一款基于Rust语言的[视频标注平台](https://huggingface.co/spaces/OpenVideo/GPT4o-Azure-Caption-Pixel)，旨在高效生成图像、视频等多种媒体的标签。该平台支持调用当前最先进的AI模型，如GPT-4o、Gemini、Claude3等，支持多提示输入和灵活的配置选项。其设计注重高性能，能够实现每秒处理100次查询，任务处理能力可扩展至2亿次。借助100个API账号，该工具可在8小时内合成包含20万条视频的数据集。所有输出内容均按模型和提示进行分类整理，确保结构清晰，便于后续研究与应用的集成。
+We have developed a [video annotation platform]((https://huggingface.co/spaces/OpenVideo/GPT4o-Azure-Caption-Pixel)) based on the Rust programming language, designed to efficiently generate labels for various media types, including images and videos. This platform supports the invocation of state-of-the-art AI models such as GPT-4o, Gemini, and Claude3, and offers flexible configuration options. It is designed for high performance, capable of processing 100 queries per second, with task processing capacity scalable to 200 million queries. Utilizing 100 API accounts, this tool can synthesize a dataset containing 200,000 videos within 8 hours. All outputs are categorized and organized by model and prompt, ensuring a clear structure for subsequent research and application integration.
 
 ![image-20250123193428569](./docs/assets/caption_platform.png)
 
-（如遇显示问题，可换Edge浏览器查看）
+(If display issues occur, please try using other browsers. e.g. Edge.)
 
 
+### Annotation Validation Platform
 
-### <u>标注校验平台</u>
+We provide an [annotation validation platform](https://huggingface.co/spaces/OpenVideo/AIL-Caption-lalala-Dup) where users can view, validate, and modify annotations for already annotated video datasets.
 
-我们提供了一个[视频标注校验平台](https://huggingface.co/spaces/OpenVideo/AIL-Caption-lalala-Dup)，对已标注的视频数据集，可以在页面上进行标注查看、校验、修改。
+**Usage:**
 
-**使用方式：**
 
-1. 打开HuggingFace链接（如遇显示问题，可换Edge浏览器查看）， 输入[个人token](https://huggingface.co/settings/tokens)
+1. Open the HuggingFace link and enter your [personal token](https://huggingface.co/settings/tokens).
 
-   
-2. 通过标注平台播放视频，查看对应的标注文本，修改标注文本和切换下一个视频
+2. Play videos, view the corresponding annotation texts, modify them, than switch to the next video.
 
    ![openvideo_tagger](./docs/assets/openvideo_tagger.png)
 
 
-**对于用户自定义数据集需要满足：**
+**For custom datasets:**
 
-1. 数据集与代码在同一平台上（例如，数据集托管在huggingface）；
+1. The dataset and code must be on the same platform (e.g., the dataset is hosted on HuggingFace).
 
-2. 修改代码中的[数据集路径]([run.py · OpenVideo/AIL-Caption-lalala-Dup at main](https://huggingface.co/spaces/OpenVideo/AIL-Caption-lalala-Dup/blob/main/run.py#L7))。
+2. Modify the dataset path in [run.py](https://huggingface.co/spaces/OpenVideo/AIL-Caption-lalala-Dup/blob/main/run.py#L7).
 
+### Data Migration
 
+We provide a general-purpose [data migration platform](https://huggingface.co/spaces/OpenVideo/HF_To_MS) for transferring datasets from HuggingFace to ModelScope, facilitating access and usage of datasets across different regional networks.
 
-### <u>数据迁移</u>
+**Usage：**
 
-我们提供了一个通用的[数据迁移平台](https://huggingface.co/spaces/OpenVideo/HF_To_MS)，用于将HuggingFace的数据集迁移到ModelScope，方便数据集在不同地区的网络下访问和使用。
-
-**使用方式：**
-
-输入HuggingFace的个人token、HuggingFace的数据集路径、ModelScope的个人token和ModelScope对应的仓库目录，点击Submit即可以后台运行的方式将数据集从HuggingFace复制到ModelScope对应的仓库中
+Enter your HuggingFace access token & dataset path, ModelScope access token & repository directory, then click `Submit` to run the dataset migration from HuggingFace to the corresponding ModelScope repository automatically.
 
 ![data_transfer](./docs/assets/data_transfer.png)
 
 
+## 👨‍💻 Contributors
 
-## 👨‍💻 贡献者
+Crawling Algorithms：@yangming @heatingma @ZZY @晚来风雪
 
-爬虫算法： @yangming @heatingma @ZZY @晚来风雪
+Video Download: @yangming @晚来风雪 @杰杰杰
 
-数据来源： @yangming @晚来风雪 @杰杰杰
+Data Cleaning：@一马平川  @zjukop @伊小布
 
-数据清洗： @一马平川  @zjukop @伊小布
+Prompt: @Tiger.C @dpyneo @巧克力
 
-Prompt:   @Tiger.C @dpyneo @巧克力
+Labeling: @YUE @zjukop
 
-模型打标：  @YUE @zjukop
+Validation Platform: @YUE @晚来风雪
 
-校验平台：  @YUE @晚来风雪
+Data Migration: @晚来风雪 @heatingma
 
-数据回流：  @晚来风雪 @heatingma
+Manual Validation: @一马平川 @dpyneo @杨嘉昊 @flipped @yi @believe @思恩
 
-人工校验：  @一马平川 @dpyneo @杨嘉昊 @flipped @yi @believe @思恩
+Project Research: @dingby @believe
 
-项目调研：  @dingby @believe
+Aesthetic Guidance: @图拉 @杨嘉昊
 
-美学指导：  @图拉 @杨嘉昊
+Documentation: @ZZY @枪枪
 
-文档：@ZZY @枪枪
+Project Coordination: @巧克力
 
-项目统筹：@巧克力
 
-## 🙏 致谢
+## 🙏 Acknowledgments
 
-服务器/资金支持：李白人工智能实验室
+Server/Financial Support: Li Bai AI Lab
 
-存储/海外专线：HuggingFace、ModelScope、OPENDataLab
+Storage: HuggingFace, ModelScope, OPENDataLab
 
-分享交流：@shoulder @王铁震 @杨欢 @新年京
+Techno-sharing：@shoulder @王铁震 @杨欢 @新年京
 
-参与讨论：@前仰跳投 @浮羽 @MYX @Winniy @GUI @Planet
+Discussion：@前仰跳投 @浮羽 @MYX @Winniy @GUI @Planet
 
-## ✨ 分享交流
+## ✨ Connection
 
 ![connect](./docs/assets/connect.png)
 
-## ©️ 许可协议
+## ©️ License
 
-项目遵循 [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/deed.zh-hans) 开源协议。 
+This project is licensed under the [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/deed.zh-hans) open-source license.
+
 
 
 
