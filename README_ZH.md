@@ -4,7 +4,8 @@
 
 
 [![HuggingFace](https://img.shields.io/badge/%F0%9F%A4%97%20HuggingFace-OpenVideo-yellow)](https://huggingface.co/OpenVideo)
-[![ModelScope](https://img.shields.io/badge/ModelScope-OpenVideo-blue)](https://www.modelscope.cn/organization/OpenVideo)
+[![ModelScope](https://img.shields.io/badge/ModelScope-OpenVideo-purple)](https://www.modelscope.cn/organization/OpenVideo)
+[![OpenDataLab](https://img.shields.io/badge/OpenDataLab-OpenVideo-blue)](https://opendatalab.com/OpenDataLab/OpenVideo)
 [![PyPi version](https://badgen.net/pypi/v/openvideo/)](https://pypi.org/pypi/openvideo/)
 [![PyPI pyversions](https://img.shields.io/badge/dynamic/json?color=blue&label=python&query=info.requires_python&url=https%3A%2F%2Fpypi.org%2Fpypi%2Fdata4co%2Fjson)](https://pypi.python.org/pypi/openvideo/) 
 [![Downloads](https://static.pepy.tech/badge/openvideo)](https://pepy.tech/project/openvideo)
